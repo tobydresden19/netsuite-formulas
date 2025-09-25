@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetSuite OtherRefNum Formula Generator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section {
+            margin-bottom: 25px;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .section h3 {
+            margin-top: 0;
+            color: #2d3748;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+            font-size: 1.3em;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background: #fafafa;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .copy-btn {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+        }
+        
+        .copy-btn:hover {
+            box-shadow: 0 6px 20px rgba(72, 187, 120, 0.4);
+        }
+        
+        .clear-btn {
+            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+            box-shadow: 0 4px 15px rgba(245, 101, 101, 0.3);
+        }
+        
+        .clear-btn:hover {
+            box-shadow: 0 6px 20px rgba(245, 101, 101, 0.4);
+        }
+        
+        .stats {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(66, 153, 225, 0.3);
+        }
+        
+        .instructions {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .instructions h4 {
+            margin-top: 0;
+            color: #2d3748;
+        }
+        
+        .instructions ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+            color: #4a5568;
+        }
+        
+        .formula-types {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .formula-type {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .alert {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: 500;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .alert.success {
+            background-color: #c6f6d5;
+            color: #276749;
+            border: 1px solid #9ae6b4;
+        }
+        
+        .alert.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 NetSuite OtherRefNum Formula Generator</h1>
+        
+        <div class="instructions">
+            <h4>📋 How to Use:</h4>
+            <ul>
+                <li><strong>Step 1:</strong> Copy your otherrefnum values from Excel/CSV (one per line)</li>
+                <li><strong>Step 2:</strong> Paste them in the input box below</li>
+                <li><strong>Step 3:</strong> Click "Generate Formula" to create the NetSuite formula</li>
+                <li><strong>Step 4:</strong> Copy the generated formula and use it in your NetSuite saved search</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <h3>📝 Input: OtherRefNum Values</h3>
+            <textarea id="inputValues" rows="8" placeholder="Paste your otherrefnum values here (one per line)
+Example:
+CHECK001
+PO12345
+REF789
+ORDER-ABC"></textarea>
+            <br><br>
+            <button onclick="generateFormula()">🚀 Generate Formula</button>
+            <button onclick="clearInput()" class="clear-btn">🗑️ Clear Input</button>
+        </div>
+        
+        <div id="stats" class="stats" style="display: none;"></div>
+        
+        <div class="section">
+            <h3>⚙️ Generated NetSuite Formulas</h3>
+            <div id="successAlert" class="alert success"></div>
+            
+            <div class="formula-types">
+                <div class="formula-type">
+                    <h4>For Search Criteria (Formula Numeric):</h4>
+                    <textarea id="criteriaFormula" rows="4" readonly placeholder="Generated formula will appear here..."></textarea>
+                    <br><br>
+                    <button onclick="copyToClipboard('criteriaFormula')" class="copy-btn">📋 Copy Criteria Formula</button>
+                </div>
+                
+                <div class="formula-type">
+                    <h4>For Results Column (Formula Text):</h4>
+                    <textarea id="columnFormula" rows="4" readonly placeholder="Generated formula will appear here..."></textarea>
+                    <br><br>
+                    <button onclick="copyToClipboard('columnFormula')" class="copy-btn">📋 Copy Column Formula</button>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px; padding: 15px; background: #f0f4f8; border-radius: 8px; font-size: 14px; color: #4a5568;">
+                <strong>💡 Usage Tips:</strong><br>
+                • Use the <em>Criteria Formula</em> in your saved search criteria (set equal to 1)<br>
+                • Use the <em>Column Formula</em> to display "Match" for matching records<br>
+                • Make sure to check "Show Internal ID" if using internal IDs<br>
+                • Test with a small subset first to verify results
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function generateFormula() {
+            const input = document.getElementById('inputValues').value.trim();
+            
+            if (!input) {
+                showAlert('Please enter some otherrefnum values first!', false);
+                return;
+            }
+            
+            // Split by lines and clean up values
+            const values = input.split('\n')
+                .map(line => line.trim())
+                .filter(line => line.length > 0)
+                .map(line => line.replace(/['"]/g, '')); // Remove existing quotes
+            
+            if (values.length === 0) {
+                showAlert('No valid values found. Please check your input.', false);
+                return;
+            }
+            
+            // Create quoted values for SQL IN clause
+            const quotedValues = values.map(value => `'${value.replace(/'/g, "''")}'`).join(', ');
+            
+            // Generate formulas
+            const criteriaFormula = `CASE WHEN {otherrefnum} IN (${quotedValues}) THEN 1 ELSE 0 END`;
+            const columnFormula = `CASE WHEN {otherrefnum} IN (${quotedValues}) THEN 'Match' ELSE NULL END`;
+            
+            // Update textareas
+            document.getElementById('criteriaFormula').value = criteriaFormula;
+            document.getElementById('columnFormula').value = columnFormula;
+            
+            // Show stats
+            const statsDiv = document.getElementById('stats');
+            statsDiv.innerHTML = `📊 Generated formulas for ${values.length} otherrefnum values`;
+            statsDiv.style.display = 'block';
+            
+            showAlert(`✅ Successfully generated formulas for ${values.length} values!`, true);
+        }
+        
+        function clearInput() {
+            document.getElementById('inputValues').value = '';
+            document.getElementById('criteriaFormula').value = '';
+            document.getElementById('columnFormula').value = '';
+            document.getElementById('stats').style.display = 'none';
+            
+            showAlert('🗑️ Input and formulas cleared!', true);
+        }
+        
+        async function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.value;
+            
+            if (!text.trim()) {
+                showAlert('No formula to copy. Generate a formula first!', false);
+                return;
+            }
+            
+            try {
+                await navigator.clipboard.writeText(text);
+                showAlert('📋 Formula copied to clipboard!', true);
+            } catch (err) {
+                // Fallback for older browsers
+                element.select();
+                document.execCommand('copy');
+                showAlert('📋 Formula copied to clipboard!', true);
+            }
+        }
+        
+        function showAlert(message, isSuccess) {
+            const alert = document.getElementById('successAlert');
+            alert.textContent = message;
+            alert.className = `alert ${isSuccess ? 'success' : 'error'} show`;
+            
+            setTimeout(() => {
+                alert.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Auto-generate when user pastes content
+        document.getElementById('inputValues').addEventListener('paste', function() {
+            setTimeout(() => {
+                if (this.value.trim()) {
+                    generateFormula();
+                }
+            }, 100);
+        });
+    </script>
+</body>
+</html>
